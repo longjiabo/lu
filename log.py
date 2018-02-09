@@ -6,13 +6,13 @@ logs = []
 def debug(s):
     s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " debug " + s
     logs.append(s)
-    print(s)
+    #print(s)
 
 
 def info(s):
     s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " info " + s
     logs.append(s)
-    print(s)
+    #print(s)
 
 
 def flush():
