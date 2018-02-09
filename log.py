@@ -12,7 +12,7 @@ def debug(s):
 def info(s):
     s = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " info " + s
     logs.append(s)
-    #print(s)
+    print(s)
 
 
 def flush():
