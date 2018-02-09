@@ -4,9 +4,10 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
-from product import Product
 
 import constant
+from product import Product
+
 import log
 
 

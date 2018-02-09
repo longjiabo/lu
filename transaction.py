@@ -5,8 +5,9 @@ import threading
 import requests
 from bs4 import BeautifulSoup
 
+import constant
 from captcha import Captcha
-import constant, log
+import log
 
 
 class Transaction(threading.Thread):

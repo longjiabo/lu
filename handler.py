@@ -2,8 +2,7 @@ import urllib3
 from scanner import Scanner
 from transaction import Transaction
 
-import constant
-import log, user
+import log, constant
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -41,7 +40,7 @@ def isStopped():
 
 
 def getUsers():
-    users = [user.changhao]
+    users = [constant.changhao]
     return users
 
 
