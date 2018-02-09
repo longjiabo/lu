@@ -22,8 +22,7 @@ class Scanner(threading.Thread):
         self.session = requests.session()
         self.session.verify = False
         if constant.proxy:
-            proxies = {"https": "http://cn-proxy.jp.oracle.com"}
-            self.session.proxies = proxies
+            constant.set_proxy(self.session)
         self.running = True
 
     def run(self):
@@ -52,3 +51,4 @@ class Scanner(threading.Thread):
             for a in ps:
                 log.debug(str(a.amount))
                 self.products.put(a)
+                return

@@ -69,7 +69,7 @@ if __name__ == '__main__':
                 continue
             products.append(product)
             for t in transactionWorkers:
-                if t.user.rule(t, product):
+                if t.is_waitting and t.user.rule(t, product):
                     t.transactionQueue.put(product)
         stop()
         log.flush()

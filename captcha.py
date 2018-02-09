@@ -12,6 +12,8 @@ class Captcha:
         self.result = None
         self.imageId = imageId
         self.session.verify = False
+        if constant.proxy:
+            constant.set_proxy(self.session)
         self.content = captchaBytes
 
     def requestCaptcha(self):

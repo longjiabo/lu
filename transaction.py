@@ -18,20 +18,22 @@ class Transaction(threading.Thread):
         self.transactionQueue = queue.Queue()
         self.session = requests.session()
         if constant.proxy:
-            proxies = {"https": "http://cn-proxy.jp.oracle.com"}
-            self.session.proxies = proxies
+            constant.set_proxy(self.session)
         self.session.headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36'
         }
         self.session.verify = False
         self.product = None
+        self.is_waitting = False
 
     def run(self):
         while True:
+            self.is_waitting = True
             product = self.transactionQueue.get()
             if product is None:
                 break
             self.product = product
+            self.is_waitting = False
             self.action()
 
     def login(self):
