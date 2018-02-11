@@ -7,7 +7,7 @@ import log, constant
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 scannerWorkers = []
-transactionWorkers = []
+transactionWorker = None
 products = []
 
 
@@ -16,39 +16,31 @@ def stop():
     for scanner in scannerWorkers:
         scanner.stop()
         scanner.join()
-    for txn in transactionWorkers:
-        txn.transactionQueue.put(None)
-        txn.join()
+        transactionWorker.transactionQueue.put(None)
+        transactionWorker.join()
 
 
 # 启动扫描和交易线程
 def start():
     log.info("start...")
-    for u in getUsers():
-        txn = Transaction(u)
-        txn.login()
-        txn.start()
-        transactionWorkers.append(txn)
+    global transactionWorker
+    transactionWorker = Transaction(get_user())
+    transactionWorker.login()
+    transactionWorker.start()
     for i in range(constant.scanner_thread):
         scanner = Scanner()
         scanner.start()
         scannerWorkers.append(scanner)
 
 
-def isStopped():
-    return False
-
-
-def getUsers():
-    users = [constant.changhao]
-    return users
+def get_user():
+    return constant.changhao
 
 
 def exportTransactions():
     with open("txns.log", 'a') as f:
-        for t in transactionWorkers:
-            for i in t.products:
-                f.write(i.print())
+        for i in transactionWorker.products:
+            f.write(i.print())
 
 
 def existProduct(product):
@@ -68,9 +60,11 @@ if __name__ == '__main__':
             if existProduct(product):
                 continue
             products.append(product)
-            for t in transactionWorkers:
-                if t.is_waitting and t.user.rule(t, product):
-                    t.transactionQueue.put(product)
+
+            if transactionWorker.hasBought():
+                break
+            if transactionWorker.is_waitting and transactionWorker.user.rule(transactionWorker, product):
+                transactionWorker.transactionQueue.put(product)
         stop()
         log.flush()
         exportTransactions()

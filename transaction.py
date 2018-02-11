@@ -26,6 +26,9 @@ class Transaction(threading.Thread):
         self.product = None
         self.is_waitting = False
 
+    def hasBought(self):
+        return len(self.products) > 0
+
     def run(self):
         while True:
             self.is_waitting = True
