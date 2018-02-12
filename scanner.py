@@ -41,12 +41,11 @@ class Scanner(threading.Thread):
                 name = i.select(".product-name a")[0].text
                 link = i.select(".product-name a")[0]['href']
                 rate = i.select(".interest-rate p")[0].string
+                status = i.select(".product-status a")[0].text
                 amount = i.select(".product-amount .num-style")[0].text
                 amount = amount.replace(",", "")
-                p = Product(name, link, rate, amount)
+                p = Product(name, link, rate, amount, status)
                 ps.append(p)
-                log.debug(str(p.amount))
-            log.debug("sort product...")
             ps.sort(key=lambda p: p.amount, reverse=True)
             for a in ps:
                 log.debug(str(a.amount))

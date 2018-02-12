@@ -60,7 +60,9 @@ if __name__ == '__main__':
             if existProduct(product):
                 continue
             products.append(product)
-
+            if product.status == product.STATUS_TRANSACTIONFAILED:
+                continue
+            log.debug(product.print_self())
             if transactionWorker.hasBought():
                 break
             if transactionWorker.is_waitting and transactionWorker.user.rule(transactionWorker, product):
