@@ -8,8 +8,6 @@ from bs4 import BeautifulSoup
 import constant
 from product import Product
 
-import log
-
 
 class Scanner(threading.Thread):
     products = queue.Queue()

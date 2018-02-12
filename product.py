@@ -2,7 +2,7 @@ import datetime
 
 
 class Product:
-    STATUS_INIT = "购买队列中"
+    STATUS_INIT = "投资"
     STATUS_TRANSACTIONING = "购买中"
     STATUS_TRANSACTIONED = "购买完成"
     STATUS_TRANSACTIONFAILED = "购买失败"

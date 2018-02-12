@@ -9,7 +9,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 scannerWorkers = []
 transactionWorker = None
-products = []
+products = {}
 
 
 # 结束所有线程
@@ -49,12 +49,12 @@ def exportTransactions():
 def get_best(ps):
     ps.sort(key=lambda p: p.amount, reverse=True)
     for p in ps:
-        if product.id in products:
+        if p.id in products:
             continue
         products[p.id] = p
-        if p.status == product.STATUS_TRANSACTIONFAILED:
+        if p.status == p.STATUS_TRANSACTIONFAILED:
             continue
-        log.debug(product.print_self())
+        log.debug(p.print_self())
         if transactionWorker.user.rule(transactionWorker, p):
             return p
 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
                 break
             if transactionWorker.hasBought():
                 break
-            if transactionWorker.is_waitting:
+            if not transactionWorker.is_waitting:
                 continue
             product = get_best(product_ary)
             if product:
