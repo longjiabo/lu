@@ -54,6 +54,7 @@ def get_best(ps):
         products[p.id] = p
         if p.status == product.STATUS_TRANSACTIONFAILED:
             continue
+        log.debug(product.print_self())
         if transactionWorker.user.rule(transactionWorker, p):
             return p
 
