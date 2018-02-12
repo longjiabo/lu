@@ -1,8 +1,9 @@
 import urllib3
+
+import constant
+import log
 from scanner import Scanner
 from transaction import Transaction
-
-import log, constant
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -16,8 +17,10 @@ def stop():
     for scanner in scannerWorkers:
         scanner.stop()
         scanner.join()
-        transactionWorker.transactionQueue.put(None)
-        transactionWorker.join()
+    transactionWorker.transactionQueue.put(None)
+    transactionWorker.join()
+    log.flush()
+    exportTransactions()
 
 
 # 启动扫描和交易线程
@@ -43,36 +46,35 @@ def exportTransactions():
             f.write(i.print())
 
 
-def existProduct(product):
-    for i in products:
-        if i.id == product.id:
-            return True
-    return False
+def get_best(ps):
+    ps.sort(key=lambda p: p.amount, reverse=True)
+    for p in ps:
+        if product.id in products:
+            continue
+        products[p.id] = p
+        if p.status == product.STATUS_TRANSACTIONFAILED:
+            continue
+        if transactionWorker.user.rule(transactionWorker, p):
+            return p
 
 
 if __name__ == '__main__':
     try:
         start()
         while True:
-            product = Scanner.products.get()
-            if product is None:
+            product_ary = Scanner.products.get()
+            if product_ary is None:
                 break
-            if existProduct(product):
-                continue
-            products.append(product)
-            if product.status == product.STATUS_TRANSACTIONFAILED:
-                continue
-            log.debug(product.print_self())
             if transactionWorker.hasBought():
                 break
-            if transactionWorker.is_waitting and transactionWorker.user.rule(transactionWorker, product):
+            if transactionWorker.is_waitting:
+                continue
+            product = get_best(product_ary)
+            if product:
+                log.debug(product.print_self())
                 transactionWorker.transactionQueue.put(product)
         stop()
-        log.flush()
-        exportTransactions()
     except KeyboardInterrupt:
         stop()
-        log.flush()
-        exportTransactions()
 
     log.info("end...")

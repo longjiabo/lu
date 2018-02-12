@@ -36,7 +36,6 @@ class Scanner(threading.Thread):
             soup = BeautifulSoup(r.text, "html.parser")
             lis = soup.select(".product-list")
             ps = []
-            log.debug("test...")
             for i in lis:
                 name = i.select(".product-name a")[0].text
                 link = i.select(".product-name a")[0]['href']
@@ -46,8 +45,9 @@ class Scanner(threading.Thread):
                 amount = amount.replace(",", "")
                 p = Product(name, link, rate, amount, status)
                 ps.append(p)
-            ps.sort(key=lambda p: p.amount, reverse=True)
-            for a in ps:
-                log.debug(str(a.amount))
-                self.products.put(a)
-                return
+            self.products.put(ps)
+            # ps.sort(key=lambda p: p.amount, reverse=True)
+            # for a in ps:
+            #     log.debug(str(a.amount))
+            #     self.products.put(a)
+            #     return
